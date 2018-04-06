@@ -6,36 +6,36 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "activity")
 public class Activity {
-    @PrimaryKey
-    private int id;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
 
     @ColumnInfo(name = "activity_type_id")
-    private int activityTypeId;
+    private long activityTypeId;
 
     @ColumnInfo(name = "timestamp")
-    private int timestamp;
+    private long timestamp;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getActivityTypeId() {
+    public long getActivityTypeId() {
         return activityTypeId;
     }
 
-    public void setActivityTypeId(int activityTypeId) {
+    public void setActivityTypeId(long activityTypeId) {
         this.activityTypeId = activityTypeId;
     }
 
-    public int getTimestamp() {
+    public long getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(int timestamp) {
+    public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 }

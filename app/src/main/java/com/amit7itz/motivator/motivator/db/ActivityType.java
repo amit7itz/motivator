@@ -6,8 +6,8 @@ import android.arch.persistence.room.PrimaryKey;
 
 @Entity(tableName = "activity_type")
 public class ActivityType {
-    @PrimaryKey
-    private int id;
+    @PrimaryKey(autoGenerate = true)
+    private long id;
 
     @ColumnInfo(name = "name")
     private String name;
@@ -18,11 +18,11 @@ public class ActivityType {
     @ColumnInfo(name = "reward")
     private int reward;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

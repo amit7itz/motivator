@@ -12,11 +12,14 @@ public interface ActivityDao {
     @Query("SELECT * FROM activity")
     List<Activity> getAll();
 
-    @Query("SELECT sum(reward) FROM activity JOIN activity_type on activity_type_id=activity_type.id")
+    @Query("SELECT sum(activity_type.reward) FROM activity JOIN activity_type on activity.activity_type_id=activity_type.id")
     int getTotalReward();
 
     @Insert
     void insertAll(Activity... activity);
+
+    @Insert
+    long insert(Activity activity);
 
     @Delete
     void delete(Activity activity);
