@@ -8,13 +8,13 @@ import android.arch.persistence.room.Query;
 import java.util.List;
 
 @Dao
-public interface ActivityTypeDao {
-    @Query("SELECT * FROM activity_type")
-    List<ActivityType> getAll();
+public interface ActivityDao {
+    @Query("SELECT * FROM activity")
+    List<Activity> getAll();
 
     @Insert
-    void insertAll(ActivityType... activity_types);
+    void insertAll(Activity... activity);
 
     @Delete
-    void delete(ActivityType activity);
+    void delete(Activity activity);
 }
