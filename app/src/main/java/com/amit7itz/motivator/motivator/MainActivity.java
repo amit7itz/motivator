@@ -1,6 +1,7 @@
 package com.amit7itz.motivator.motivator;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         act.setActivityTypeId(type_id);
         act.setTimestamp(System.currentTimeMillis() / 1000);
         this.getDb().activityDao().insertAll(act);
+        t.setTextColor(Color.parseColor("#4CAF50"));
         this.updateTotalReward();
     }
 
