@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -22,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.updateTotalReward();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         this.fillActivitiesTypesViewer();
     }
 
@@ -41,12 +47,7 @@ public class MainActivity extends AppCompatActivity {
         this.mLayoutManager = new LinearLayoutManager(this);
         this.mRecyclerView.setLayoutManager(this.mLayoutManager);
 
-        // specify an adapter (see also next example)
-        String[] sa = new String[3];
-        sa[0] = "Run";
-        sa[1] = "Walk";
-        sa[2] = "Swim";
-        this.mAdapter = new ActivityTypesAdapter(sa);
+        this.mAdapter = new ActivityTypesAdapter(this.getDb());
         this.mRecyclerView.setAdapter(this.mAdapter);
     }
 
@@ -55,17 +56,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void addMoney(View view) {
-        long type_id;
-        if (this.getDb().activityTypeDao().count() == 0) {
-            ActivityType some_type = new ActivityType();
-            some_type.setName("Running");
-            some_type.setDescription("bla bla bla");
-            some_type.setReward(5);
-            type_id = this.getDb().activityTypeDao().insert(some_type);
-        }
-        else {
-            type_id = this.getDb().activityTypeDao().first().getId();
-        }
+        TextView t = (TextView) view;
+        long type_id = (long) t.getTag();
         Activity act = new Activity();
         act.setActivityTypeId(type_id);
         act.setTimestamp(System.currentTimeMillis() / 1000);
