@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Motivator</string>
-    <string name="edit_message">Enter a message</string>
-    <string name="button_send">Send</string>
+    <string name="title_activity_add_type">Add new activity type</string>
+    <string name="add_activity_name">Name</string>
+    <string name="add_activity_description">Description</string>
+    <string name="add_activity_reward">Reward</string>
+    <string name="add_activity_button_text">Add</string>
+    <string name="zero">0</string>
 </resources>
