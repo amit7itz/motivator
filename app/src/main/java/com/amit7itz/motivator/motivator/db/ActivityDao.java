@@ -15,6 +15,9 @@ public interface ActivityDao {
     @Query("SELECT sum(activity_type.reward) FROM activity JOIN activity_type on activity.activity_type_id=activity_type.id")
     int getTotalReward();
 
+    @Query("SELECT max(timestamp) FROM activity")
+    long getLastActivityTimestamp();
+
     @Insert
     void insertAll(Activity... activity);
 

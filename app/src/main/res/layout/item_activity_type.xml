@@ -5,9 +5,9 @@
     android:layout_height="wrap_content"
     android:layout_weight="1"
     android:background="@drawable/gray_underline"
-    android:onClick="addMoney"
-    android:text="asd"
+    android:onClick="addActivity"
+    android:text=""
     android:textAppearance="@android:style/TextAppearance.Large"
     android:textColor="@android:color/black"
-    android:textSize="54sp"
+    android:textSize="36sp"
     android:layout_marginTop="3dp"/>

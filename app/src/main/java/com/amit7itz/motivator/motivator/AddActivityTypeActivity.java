@@ -11,6 +11,7 @@ import com.amit7itz.motivator.motivator.db.ActivityTypeDao;
 import com.amit7itz.motivator.motivator.db.AppDatabase;
 
 public class AddActivityTypeActivity extends AppCompatActivity {
+    private final static int RewardLimit = 500;
     EditText name;
     EditText description;
     EditText reward;
@@ -26,10 +27,15 @@ public class AddActivityTypeActivity extends AppCompatActivity {
     }
 
     public void add_activity(View v){
+        int reward_num = Integer.decode(reward.getText().toString());
+        if (reward_num > RewardLimit) {
+            Messages.showMessage(this, String.format("Reward must be up to %s", RewardLimit));
+            return;
+        }
         ActivityType new_type = new ActivityType();
         new_type.setName(name.getText().toString());
         new_type.setDescription(description.getText().toString());
-        new_type.setReward(Integer.decode(reward.getText().toString()));
+        new_type.setReward(reward_num);
         ActivityTypeDao activity_types_dao = AppDatabase.getAppDatabase(this.getApplicationContext()).activityTypeDao();
         activity_types_dao.insert(new_type);
         finish();
