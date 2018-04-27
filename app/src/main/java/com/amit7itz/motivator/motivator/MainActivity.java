@@ -12,14 +12,18 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.amit7itz.motivator.motivator.db.Activity;
+import com.amit7itz.motivator.motivator.db.ActivityType;
 import com.amit7itz.motivator.motivator.db.AppDatabase;
 
 import java.text.DecimalFormat;
+
+import static com.amit7itz.motivator.motivator.TimeUtils.getTimestampSeconds;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
@@ -27,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager mLayoutManager;
     private final static long MaxActivityIntervalMinutes = 5;
     private DrawerLayout mDrawerLayout;
+    private final static int StreakInvervalDays = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.updateTotalReward();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,12 +59,19 @@ public class MainActivity extends AppCompatActivity {
 
                         // Add code here to update the UI based on the item selected
                         // For example, swap UI fragments here
+                        Class target = null;
                         switch (menuItem.getItemId()){
+                            case R.id.nav_manual:
+                                target = ManualChanges.class;
+                                break;
                             case R.id.nav_about:
-                                Intent intent = new Intent(getApplicationContext(), AboutActivity.class);
-                                startActivity(intent);
+                                target = AboutActivity.class;
+                                break;
                         }
-
+                        if (target != null) {
+                            Intent intent = new Intent(getApplicationContext(), target);
+                            startActivity(intent);
+                        }
                         return true;
                     }
                 });
@@ -80,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         this.fillActivitiesTypesViewer();
+        this.updateTotalReward();
+        this.updateStreakView();
     }
 
     private static String psikify(String s) {
@@ -103,6 +116,11 @@ public class MainActivity extends AppCompatActivity {
         animator.start();
     }
 
+    private void updateStreakView() {
+        final TextView streakViewer = findViewById(R.id.streakViewer);
+        streakViewer.setText(String.format("%s", this.getStreak()));
+    }
+
     private void fillActivitiesTypesViewer() {
         this.mRecyclerView = findViewById(R.id.activity_types_viewer);
 
@@ -122,8 +140,31 @@ public class MainActivity extends AppCompatActivity {
         return AppDatabase.getAppDatabase(this.getApplicationContext());
     }
 
-    public static long getTimestampSeconds(){
-        return System.currentTimeMillis() / 1000;
+    private int getStreak() {
+        long now = getTimestampSeconds();
+        int streak = 0;
+        Activity last_act = null;
+        for (Activity act: this.getDb().activityDao().getAllStreakReversed()) {
+            Log.e("asd", act.toString());
+            if (last_act == null) {
+                if ((now - act.getTimestamp()) <= StreakInvervalDays*60*60*24) {
+                    streak += act.getStreakValue();
+                }
+                else {
+                    return 0;
+                }
+            }
+            else {
+                if ((act.getTimestamp() - last_act.getTimestamp()) <= StreakInvervalDays*60*60*24) {
+                    streak += act.getStreakValue();
+                }
+                else {
+                    return streak;
+                }
+            }
+            last_act = act;
+        }
+        return streak;
     }
 
     public void addActivity(View view) {
@@ -137,12 +178,41 @@ public class MainActivity extends AppCompatActivity {
         else {
             TextView t = (TextView) view;
             long type_id = (long) t.getTag();
+            ActivityType activity_type = this.getDb().activityTypeDao().getById(type_id);
             Activity act = new Activity();
             act.setActivityTypeId(type_id);
             act.setTimestamp(now);
+            act.setDescription(activity_type.getName());
+            act.setValue(activity_type.getReward());
+            int streak = this.getStreak();
+            if (streak > 0) {
+                streak += 1 ; // for this activity that we haven't added yet
+                long last_major_activity_time = getDb().activityDao().getLastMajorActivityTimestamp();
+                long bonus_percent = 0;
+                String bonus_message = "Congratulations! you've earned a bonus!";
+                long time_since_last_activity = (last_major_activity_time - now);
+                if (activity_type.getMajor() && time_since_last_activity <= 60*60*24) {
+                    bonus_percent = 10;
+                    bonus_message += String.format("\n%s%% for performing 2 major activities in less than 24 hours", bonus_percent);
+                }
+                else if (activity_type.getMajor() && time_since_last_activity <= 2*60*60*24) {
+                    bonus_percent = 5;
+                    bonus_message += String.format("\n%s%% for performing 2 major activities in less than 48 hours", bonus_percent);
+                }
+                bonus_message += String.format("\n%s%% for for maintaining %s activities streak", Math.min(25, streak), streak);
+                bonus_percent += Math.min(25, streak);
+                bonus_message += String.format("\nTotal bonus: %s%%", bonus_percent);
+                long bonus = (long) Math.floor(bonus_percent / 100.0 * act.getValue());
+                if (bonus > 0) {
+                    Messages.showMessage(this, bonus_message);
+                }
+                act.setBonus(bonus);
+            }
+            act.setTotalValue(act.getValue() + act.getBonus());
             this.getDb().activityDao().insert(act);
             t.setTextColor(Color.parseColor("#4CAF50"));
             this.updateTotalReward();
+            this.updateStreakView();
         }
     }
 

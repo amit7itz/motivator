@@ -9,11 +9,26 @@ public class Activity {
     @PrimaryKey(autoGenerate = true)
     private long id;
 
+    @ColumnInfo(name = "description")
+    private String description;
+
     @ColumnInfo(name = "activity_type_id")
     private long activityTypeId;
 
+    @ColumnInfo(name = "value")
+    private long value;
+
+    @ColumnInfo(name = "bonus")
+    private long bonus = 0;
+
+    @ColumnInfo(name = "total_value")
+    private long totalValue;
+
     @ColumnInfo(name = "timestamp")
     private long timestamp;
+
+    @ColumnInfo(name = "streak_value")
+    private int streakValue = 1;
 
     public long getId() {
         return id;
@@ -37,5 +52,45 @@ public class Activity {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public long getValue() {
+        return value;
+    }
+
+    public void setValue(long value) {
+        this.value = value;
+    }
+
+    public long getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(long bonus) {
+        this.bonus = bonus;
+    }
+
+    public long getTotalValue() {
+        return totalValue;
+    }
+
+    public void setTotalValue(long totalValue) {
+        this.totalValue = totalValue;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public int getStreakValue() {
+        return streakValue;
+    }
+
+    public void setStreakValue(int streakValue) {
+        this.streakValue = streakValue;
     }
 }

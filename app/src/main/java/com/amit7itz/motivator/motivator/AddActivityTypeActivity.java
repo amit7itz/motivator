@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 
 import com.amit7itz.motivator.motivator.db.ActivityType;
@@ -16,6 +17,7 @@ public class AddActivityTypeActivity extends AppCompatActivity {
     EditText name;
     EditText description;
     EditText reward;
+    CheckBox major;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class AddActivityTypeActivity extends AppCompatActivity {
         name = findViewById(R.id.activtyName);
         description = findViewById(R.id.activityDescription);
         reward = findViewById(R.id.activityReward);
+        major = findViewById(R.id.major);
     }
 
     public void add_activity(View v){
@@ -42,6 +45,7 @@ public class AddActivityTypeActivity extends AppCompatActivity {
         new_type.setName(name.getText().toString());
         new_type.setDescription(description.getText().toString());
         new_type.setReward(reward_num);
+        new_type.setMajor(major.isChecked());
         ActivityTypeDao activity_types_dao = AppDatabase.getAppDatabase(this.getApplicationContext()).activityTypeDao();
         activity_types_dao.insert(new_type);
         finish();

@@ -18,6 +18,9 @@ public class ActivityType {
     @ColumnInfo(name = "reward")
     private int reward;
 
+    @ColumnInfo(name = "major")
+    private Boolean major = true;
+
     public long getId() {
         return id;
     }
@@ -48,5 +51,13 @@ public class ActivityType {
 
     public void setReward(int reward) {
         this.reward = reward;
+    }
+
+    public Boolean getMajor() {
+        return major;
+    }
+
+    public void setMajor(Boolean major) {
+        this.major = major;
     }
 }
