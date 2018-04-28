@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amit7itz.motivator.motivator.db.Activity;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private final static long MaxActivityIntervalMinutes = 5;
+    private final static long MaxActivityIntervalMinutes = 1;
     private DrawerLayout mDrawerLayout;
     private final static int StreakInvervalDays = 3;
 
@@ -176,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     MaxActivityIntervalMinutes*60 - now + last_activity_time));
         }
         else {
-            TextView t = (TextView) view;
+            RelativeLayout t = (RelativeLayout) view;
             long type_id = (long) t.getTag();
             ActivityType activity_type = this.getDb().activityTypeDao().getById(type_id);
             Activity act = new Activity();
@@ -188,29 +189,39 @@ public class MainActivity extends AppCompatActivity {
             if (streak > 0) {
                 streak += 1 ; // for this activity that we haven't added yet
                 long last_major_activity_time = getDb().activityDao().getLastMajorActivityTimestamp();
-                long bonus_percent = 0;
-                String bonus_message = "Congratulations! you've earned a bonus!";
+                long close_activities_bonus_percent = 0;
+                long close_activities_max_interval = 0;
                 long time_since_last_activity = (last_major_activity_time - now);
                 if (activity_type.getMajor() && time_since_last_activity <= 60*60*24) {
-                    bonus_percent = 10;
-                    bonus_message += String.format("\n%s%% for performing 2 major activities in less than 24 hours", bonus_percent);
+                    close_activities_bonus_percent = 10;
+                    close_activities_max_interval = 24;
                 }
                 else if (activity_type.getMajor() && time_since_last_activity <= 2*60*60*24) {
-                    bonus_percent = 5;
-                    bonus_message += String.format("\n%s%% for performing 2 major activities in less than 48 hours", bonus_percent);
+                    close_activities_bonus_percent = 5;
+                    close_activities_max_interval = 48;
                 }
-                bonus_message += String.format("\n%s%% for for maintaining %s activities streak", Math.min(25, streak), streak);
-                bonus_percent += Math.min(25, streak);
-                bonus_message += String.format("\nTotal bonus: %s%%", bonus_percent);
-                long bonus = (long) Math.floor(bonus_percent / 100.0 * act.getValue());
+                long streak_bonus = Math.min(25, streak);
+                long total_bonus_percent = close_activities_bonus_percent + streak_bonus;
+                String bonus_message = String.format("Well done! You get %s%% bonus", total_bonus_percent);
+                bonus_message += String.format("\n%s%% for maintaining %s activities streak", Math.min(25, streak), streak);
+                if (close_activities_bonus_percent > 0) {
+                    bonus_message += String.format("\n%s%% for performing 2 major activities in less than %s hours",
+                            close_activities_bonus_percent,
+                            close_activities_max_interval);
+                }
+                bonus_message += "\nKeep up the great work!";
+                long bonus = (long) Math.floor(total_bonus_percent / 100.0 * act.getValue());
                 if (bonus > 0) {
-                    Messages.showMessage(this, bonus_message);
+                    Messages.showMessage(this, "Streak Bonus!!", bonus_message);
                 }
                 act.setBonus(bonus);
             }
             act.setTotalValue(act.getValue() + act.getBonus());
             this.getDb().activityDao().insert(act);
-            t.setTextColor(Color.parseColor("#4CAF50"));
+            TextView act_name_textview = t.findViewById(R.id.activity_type_name);
+            TextView act_reward_textview = t.findViewById(R.id.activity_type_reward);
+            act_name_textview.setTextColor(Color.parseColor("#4CAF50"));
+            act_reward_textview.setTextColor(Color.parseColor("#4CAF50"));
             this.updateTotalReward();
             this.updateStreakView();
         }

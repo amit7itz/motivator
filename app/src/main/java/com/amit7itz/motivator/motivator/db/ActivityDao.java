@@ -24,6 +24,9 @@ public interface ActivityDao {
     @Query("SELECT max(timestamp) FROM activity JOIN activity_type on activity_type_id = activity_type.id WHERE major")
     long getLastMajorActivityTimestamp();
 
+    @Query("SELECT * FROM activity ORDER BY timestamp DESC LIMIT 1")
+    Activity getLast();
+
     @Insert
     void insertAll(Activity... activity);
 

@@ -19,11 +19,16 @@ Developed by: Amit Itzkovitch\n
 Contact Me! amit7itz@gmail.com\n
 \n\n
 Credits:\n
-Trophy icon designed by Freepik from www.flaticon.com
+Trophy icon designed by Freepik from www.flaticon.com\n
+Flame icon made by Vectors Market from www.flaticon.com
 </string>
     <string name="motivator">Motivator</string>
     <string name="major">Major activity</string>
     <string name="balance">Balance</string>
     <string name="streak">Streak</string>
     <string name="manual_changes">Manual Changes</string>
+    <string name="last_activity">Last Activity</string>
+    <string name="last_activity_content">You have no activities yet</string>
+    <string name="delete_last_activity">Delete Last Activity</string>
+    <string name="fix_balance_header">Fix Balance</string>
 </resources>
