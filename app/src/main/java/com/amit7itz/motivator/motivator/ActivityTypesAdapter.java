@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -22,10 +23,10 @@ public class ActivityTypesAdapter extends RecyclerView.Adapter<ActivityTypesAdap
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public RelativeLayout container;
+        public LinearLayout container;
         public TextView activityName, activityDesctiption, activityReward;
         public ImageView majorIcon;
-        public ViewHolder(RelativeLayout v) {
+        public ViewHolder(LinearLayout v) {
             super(v);
             activityName = v.findViewById(R.id.activity_type_name);
             activityDesctiption = v.findViewById(R.id.activity_type_description);
@@ -46,7 +47,7 @@ public class ActivityTypesAdapter extends RecyclerView.Adapter<ActivityTypesAdap
     public ActivityTypesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                    int viewType) {
         // create a new view
-        RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
+        LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_activity_type, parent, false);
 
         ViewHolder vh = new ViewHolder(v);

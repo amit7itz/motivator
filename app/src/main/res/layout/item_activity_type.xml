@@ -1,57 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_activity_type"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/gray_underline"
     android:clickable="true"
     android:focusable="true"
     android:onClick="addActivity"
-    android:orientation="vertical"
-    android:paddingTop="1dp">
+    android:orientation="horizontal">
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/activity_type_name"
-        android:layout_width="wrap_content"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/item_activity_type"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="activity name"
-        android:textAppearance="@android:style/TextAppearance.Large"
-        android:textColor="@android:color/black"
-        android:textSize="36sp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp"/>
+        android:layout_weight="10">
 
-    <ImageView
-        android:id="@+id/major_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
-        android:src="@drawable/beenhere"
-        android:layout_toEndOf="@+id/activity_type_name"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"/>
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/activity_type_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:text="activity name"
+            android:textAppearance="@android:style/TextAppearance.Large"
+            android:textColor="@android:color/black"
+            android:textSize="32sp"
+            android:textAlignment="viewStart"
+            tools:ignore="HardcodedText" />
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/activity_type_description"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="activity description"
-        android:textAppearance="@android:style/TextAppearance.Material"
-        android:textColor="@android:color/darker_gray"
-        android:textSize="24sp"
-        android:layout_below="@+id/activity_type_name"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="8dp"
-        />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/activity_type_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@id/activity_type_name"
+            android:layout_marginStart="8dp"
+            android:text="activity description"
+            android:textAppearance="@android:style/TextAppearance.Material"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="22sp"
+            tools:ignore="HardcodedText" />
+
+
+        <ImageView
+            android:id="@+id/major_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/activity_type_name"
+            android:src="@drawable/beenhere" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_type_reward"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:gravity="end"
         android:text="100"
         android:textAppearance="@android:style/TextAppearance.Material"
         android:textColor="@android:color/black"
         android:textSize="36sp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"/>
-</RelativeLayout>
+        android:layout_gravity="center_vertical"
+        android:singleLine="true"
+        android:layout_weight="0"
+        tools:ignore="HardcodedText" />
+
+</LinearLayout>

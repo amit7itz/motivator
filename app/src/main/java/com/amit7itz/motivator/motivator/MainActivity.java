@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -103,18 +104,27 @@ public class MainActivity extends AppCompatActivity {
         return formatter.format(amount);
     }
 
-    private void updateTotalReward() {
-        final TextView moneyText = findViewById(R.id.currentMoney);
-        long old_reward = Long.decode(moneyText.getText().toString().replaceAll(",", ""));
+    private void updateTotalReward(boolean animation) {
         long new_reward = this.getDb().activityDao().getTotalReward();
-        ValueAnimator animator = ValueAnimator.ofInt((int) old_reward, (int) new_reward);
-        animator.setDuration(2000);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                moneyText.setText(psikify(animation.getAnimatedValue().toString()));
-            }
-        });
-        animator.start();
+        final TextView moneyText = findViewById(R.id.currentMoney);
+        if (animation) {
+            long old_reward = Long.decode(moneyText.getText().toString().replaceAll(",", ""));
+            ValueAnimator animator = ValueAnimator.ofInt((int) old_reward, (int) new_reward);
+            animator.setDuration(2000);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    moneyText.setText(psikify(animation.getAnimatedValue().toString()));
+                }
+            });
+            animator.start();
+        }
+        else {
+            moneyText.setText(psikify(String.format("%s", new_reward)));
+        }
+    }
+
+    private void updateTotalReward() {
+        updateTotalReward(false);
     }
 
     private void updateStreakView() {
@@ -146,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
         int streak = 0;
         Activity last_act = null;
         for (Activity act: this.getDb().activityDao().getAllStreakReversed()) {
-            Log.e("asd", act.toString());
             if (last_act == null) {
                 if ((now - act.getTimestamp()) <= StreakInvervalDays*60*60*24) {
                     streak += act.getStreakValue();
@@ -172,12 +181,13 @@ public class MainActivity extends AppCompatActivity {
         long now = getTimestampSeconds();
         long last_activity_time = getDb().activityDao().getLastActivityTimestamp();
         if (now - last_activity_time < MaxActivityIntervalMinutes*60) {
-            Messages.showMessage(this, String.format("Oops! Your last activity was less than %s minutes ago.\nYou can add new activity in %s seconds",
+            Messages.showMessage(this, "Oops!",
+                    String.format("Your last activity was less than %s minutes ago.\nYou can add new activity in %s seconds",
                     MaxActivityIntervalMinutes,
                     MaxActivityIntervalMinutes*60 - now + last_activity_time));
         }
         else {
-            RelativeLayout t = (RelativeLayout) view;
+            LinearLayout t = (LinearLayout) view;
             long type_id = (long) t.getTag();
             ActivityType activity_type = this.getDb().activityTypeDao().getById(type_id);
             Activity act = new Activity();
@@ -222,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
             TextView act_reward_textview = t.findViewById(R.id.activity_type_reward);
             act_name_textview.setTextColor(Color.parseColor("#4CAF50"));
             act_reward_textview.setTextColor(Color.parseColor("#4CAF50"));
-            this.updateTotalReward();
+            this.updateTotalReward(true);
             this.updateStreakView();
         }
     }
