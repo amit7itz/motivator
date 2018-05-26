@@ -4,6 +4,9 @@ import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import java.util.Calendar;
+import java.util.Locale;
+
 @Entity(tableName = "activity")
 public class Activity {
     @PrimaryKey(autoGenerate = true)
@@ -52,6 +55,21 @@ public class Activity {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public Calendar getCalendar() {
+        Calendar c =  Calendar.getInstance(Locale.getDefault());
+        c.setTimeInMillis(timestamp*1000);
+        return c;
+    }
+
+    public Calendar getDateWithoutTime() {
+        Calendar cal = getCalendar();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal;
     }
 
     public long getValue() {

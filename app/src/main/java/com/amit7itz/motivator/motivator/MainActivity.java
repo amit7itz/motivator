@@ -24,6 +24,10 @@ import com.amit7itz.motivator.motivator.db.ActivityType;
 import com.amit7itz.motivator.motivator.db.AppDatabase;
 
 import java.text.DecimalFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import static com.amit7itz.motivator.motivator.TimeUtils.getTimestampSeconds;
 
@@ -151,27 +155,34 @@ public class MainActivity extends AppCompatActivity {
         return AppDatabase.getAppDatabase(this.getApplicationContext());
     }
 
+    private Calendar today() {
+        Calendar c = Calendar.getInstance(Locale.getDefault());
+        c.setTimeInMillis(getTimestampSeconds()*1000);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
+        return c;
+    }
+
     private int getStreak() {
-        long now = getTimestampSeconds();
         int streak = 0;
         Activity last_act = null;
         for (Activity act: this.getDb().activityDao().getAllStreakReversed()) {
+            Calendar last_act_date;
             if (last_act == null) {
-                if ((now - act.getTimestamp()) <= StreakInvervalDays*60*60*24) {
-                    streak += act.getStreakValue();
-                }
-                else {
-                    return 0;
-                }
+                last_act_date = today();
             }
             else {
-                if ((act.getTimestamp() - last_act.getTimestamp()) <= StreakInvervalDays*60*60*24) {
-                    streak += act.getStreakValue();
-                }
-                else {
-                    return streak;
-                }
+                last_act_date = last_act.getDateWithoutTime();
             }
+            if (TimeUnit.MILLISECONDS.toDays(last_act_date.getTimeInMillis() - act.getDateWithoutTime().getTimeInMillis()) <= StreakInvervalDays) {
+                streak += act.getStreakValue();
+            }
+            else {
+                return streak;
+            }
+
             last_act = act;
         }
         return streak;
@@ -198,24 +209,24 @@ public class MainActivity extends AppCompatActivity {
             int streak = this.getStreak();
             if (streak > 0) {
                 streak += 1 ; // for this activity that we haven't added yet
-                long last_major_activity_time = getDb().activityDao().getLastMajorActivityTimestamp();
+                Activity last_major_activity = getDb().activityDao().getLastMajorActivity();
                 long close_activities_bonus_percent = 0;
                 long close_activities_max_interval = 0;
-                long time_since_last_activity = (last_major_activity_time - now);
-                if (activity_type.getMajor() && time_since_last_activity <= 60*60*24) {
+                long days_since_last_activity = TimeUnit.MILLISECONDS.toDays(today().getTimeInMillis() - last_major_activity.getDateWithoutTime().getTimeInMillis());
+                if (activity_type.getMajor() && days_since_last_activity <= 1) {
                     close_activities_bonus_percent = 10;
-                    close_activities_max_interval = 24;
+                    close_activities_max_interval = 1;
                 }
-                else if (activity_type.getMajor() && time_since_last_activity <= 2*60*60*24) {
+                else if (activity_type.getMajor() && days_since_last_activity <= 2) {
                     close_activities_bonus_percent = 5;
-                    close_activities_max_interval = 48;
+                    close_activities_max_interval = 2;
                 }
                 long streak_bonus = Math.min(25, streak);
                 long total_bonus_percent = close_activities_bonus_percent + streak_bonus;
                 String bonus_message = String.format("Well done! You get %s%% bonus", total_bonus_percent);
                 bonus_message += String.format("\n%s%% for maintaining %s activities streak", Math.min(25, streak), streak);
                 if (close_activities_bonus_percent > 0) {
-                    bonus_message += String.format("\n%s%% for performing 2 major activities in less than %s hours",
+                    bonus_message += String.format("\n%s%% for performing 2 major activities in less than %s days",
                             close_activities_bonus_percent,
                             close_activities_max_interval);
                 }
