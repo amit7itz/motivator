@@ -31,4 +31,5 @@ Flame icon made by Vectors Market from www.flaticon.com
     <string name="last_activity_content">You have no activities yet</string>
     <string name="delete_last_activity">Delete Last Activity</string>
     <string name="fix_balance_header">Fix Balance</string>
+    <string name="modify">Modify</string>
 </resources>

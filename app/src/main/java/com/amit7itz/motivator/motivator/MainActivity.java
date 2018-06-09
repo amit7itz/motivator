@@ -12,11 +12,9 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amit7itz.motivator.motivator.db.Activity;
@@ -25,7 +23,6 @@ import com.amit7itz.motivator.motivator.db.AppDatabase;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 

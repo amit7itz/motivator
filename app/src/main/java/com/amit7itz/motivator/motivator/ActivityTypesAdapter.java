@@ -1,12 +1,12 @@
 package com.amit7itz.motivator.motivator;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.amit7itz.motivator.motivator.db.ActivityType;
@@ -44,12 +44,20 @@ public class ActivityTypesAdapter extends RecyclerView.Adapter<ActivityTypesAdap
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ActivityTypesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                   int viewType) {
+    public ActivityTypesAdapter.ViewHolder onCreateViewHolder(final ViewGroup parent,
+                                                              int viewType) {
         // create a new view
         LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_activity_type, parent, false);
-
+        v.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Intent intent = new Intent(v.getContext(), AddActivityTypeActivity.class);
+                intent.putExtra("activity_type_id", (long) v.getTag());
+                v.getContext().startActivity(intent);
+                return true;
+            }
+        });
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }
