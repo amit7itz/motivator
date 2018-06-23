@@ -262,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
         long minute = 60;
         long hour = minute * 60;
         long day = hour * 24;
-        long next_activity_time = last_major_act.getDateWithoutTime().getTimeInMillis() / 1000 + StreakInvervalDays * day;
+        long next_activity_time = last_major_act.getDateWithoutTime().getTimeInMillis() / 1000 + (StreakInvervalDays + 1) * day;
         long time_left = next_activity_time - getTimestampSeconds();
         if (time_left > 0) {
             message += "Time left for next activity:\n";
