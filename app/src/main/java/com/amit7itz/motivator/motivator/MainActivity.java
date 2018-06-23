@@ -22,7 +22,9 @@ import com.amit7itz.motivator.motivator.db.ActivityType;
 import com.amit7itz.motivator.motivator.db.AppDatabase;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -220,7 +222,12 @@ public class MainActivity extends AppCompatActivity {
                 }
                 long streak_bonus = Math.min(25, streak);
                 long total_bonus_percent = close_activities_bonus_percent + streak_bonus;
-                String bonus_message = String.format("Well done! You get %s%% bonus", total_bonus_percent);
+
+                long bonus = Math.round(total_bonus_percent / 100.0 * act.getValue());
+
+                act.setBonus(bonus);
+
+                String bonus_message = String.format("Well done! You get %s points bonus", bonus);
                 bonus_message += String.format("\n%s%% for maintaining %s activities streak", Math.min(25, streak), streak);
                 if (close_activities_bonus_percent > 0) {
                     bonus_message += String.format("\n%s%% for performing 2 major activities in less than %s days",
@@ -228,11 +235,9 @@ public class MainActivity extends AppCompatActivity {
                             close_activities_max_interval);
                 }
                 bonus_message += "\nKeep up the great work!";
-                long bonus = (long) Math.floor(total_bonus_percent / 100.0 * act.getValue());
                 if (bonus > 0) {
                     Messages.showMessage(this, "Streak Bonus!!", bonus_message);
                 }
-                act.setBonus(bonus);
             }
             act.setTotalValue(act.getValue() + act.getBonus());
             this.getDb().activityDao().insert(act);
@@ -248,6 +253,29 @@ public class MainActivity extends AppCompatActivity {
     public void addActivityTypeClick(View v) {
         Intent intent = new Intent(this, AddActivityTypeActivity.class);
         startActivity(intent);
+    }
+
+    public void showLastMajorActivityTime(View v) {
+        Activity last_major_act = getDb().activityDao().getLastMajorActivity();
+        String message = "Last major activity:\n";
+        message += last_major_act.getTimestampStr() + "\n\n";
+        long minute = 60;
+        long hour = minute * 60;
+        long day = hour * 24;
+        long next_activity_time = last_major_act.getDateWithoutTime().getTimeInMillis() / 1000 + StreakInvervalDays * day;
+        long time_left = next_activity_time - getTimestampSeconds();
+        if (time_left > 0) {
+            message += "Time left for next activity:\n";
+            long days = time_left / day;
+            time_left %= day;
+            long hours = time_left / hour;
+            time_left %= hour;
+            long minutes = time_left / minute;
+            time_left %= minute;
+            long seconds = time_left;
+            message += String.format("%sd %sh %sm %ss", days, hours, minutes, seconds);
+        }
+        Messages.showMessage(this, "Streak Status", message);
     }
 
 }

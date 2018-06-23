@@ -60,13 +60,15 @@ public class ManualChanges extends AppCompatActivity {
                     "Value: %s\n" +
                     "Bonus: %s\n" +
                     "Total value: %s\n" +
-                    "Streak value: %s\n";
+                    "Streak value: %s\n" +
+                    "Time: %s";
             String last_act_details = String.format(last_act_details_template,
                     act.getDescription(),
                     act.getValue(),
                     act.getBonus(),
                     act.getTotalValue(),
-                    act.getStreakValue()
+                    act.getStreakValue(),
+                    act.getTimestampStr()
                     );
             this.lastActivityContent.setText(last_act_details);
             this.deleteLastActivityButton.setEnabled(true);
