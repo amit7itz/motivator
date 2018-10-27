@@ -1,6 +1,5 @@
 package com.amit7itz.motivator.motivator;
 
-import android.arch.core.util.Function;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
